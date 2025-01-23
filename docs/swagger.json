@@ -1,0 +1,295 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a sample server for managing students and their scores.",
+        "title": "Student Management API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.example.com/support",
+            "email": "support@example.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/student": {
+            "post": {
+                "description": "通过提供学生的详细信息来向系统中添加新学生。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "students"
+                ],
+                "summary": "添加新学生",
+                "parameters": [
+                    {
+                        "description": "学生信息",
+                        "name": "student",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Student"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功消息",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "无效输入",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.APIResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "学生已存在",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/student/{id}": {
+            "get": {
+                "description": "根据学生 ID 获取学生的详细信息。",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "students"
+                ],
+                "summary": "查询学生信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "学生 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Student"
+                        }
+                    },
+                    "404": {
+                        "description": "学生未找到",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.APIResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "通过学生 ID 更新学生的基本信息。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "students"
+                ],
+                "summary": "更新学生信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "学生 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "更新后的学生信息",
+                        "name": "student",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Student"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功消息",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "无效输入",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "学生未找到",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.APIResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "通过学生 ID 从系统中删除学生。",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "students"
+                ],
+                "summary": "删除学生",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "学生 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功消息",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "学生未找到",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/student/{id}/score/{course}": {
+            "post": {
+                "description": "为学生的特定课程添加成绩。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "scores"
+                ],
+                "summary": "为学生添加课程成绩",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "学生 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "课程名称",
+                        "name": "course",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "课程成绩",
+                        "name": "score",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ScoreInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功消息",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "无效输入",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.APIResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "学生未找到",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.APIResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handlers.APIResponse": {
+            "description": "表示一个标准的 API 响应，包含消息和可选的错误信息",
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "无效的输入"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "操作成功"
+                }
+            }
+        },
+        "models.ScoreInput": {
+            "type": "object",
+            "properties": {
+                "score": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.Student": {
+            "type": "object",
+            "properties": {
+                "class": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "scores": {
+                    "description": "存储课程名称和成绩",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "number"
+                    }
+                }
+            }
+        }
+    }
+}

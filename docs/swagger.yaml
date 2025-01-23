@@ -1,0 +1,197 @@
+basePath: /
+definitions:
+  handlers.APIResponse:
+    description: 表示一个标准的 API 响应，包含消息和可选的错误信息
+    properties:
+      error:
+        example: 无效的输入
+        type: string
+      message:
+        example: 操作成功
+        type: string
+    type: object
+  models.ScoreInput:
+    properties:
+      score:
+        type: number
+    type: object
+  models.Student:
+    properties:
+      class:
+        type: string
+      gender:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      scores:
+        additionalProperties:
+          type: number
+        description: 存储课程名称和成绩
+        type: object
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+    url: http://www.example.com/support
+  description: This is a sample server for managing students and their scores.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Student Management API
+  version: "1.0"
+paths:
+  /student:
+    post:
+      consumes:
+      - application/json
+      description: 通过提供学生的详细信息来向系统中添加新学生。
+      parameters:
+      - description: 学生信息
+        in: body
+        name: student
+        required: true
+        schema:
+          $ref: '#/definitions/models.Student'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功消息
+          schema:
+            $ref: '#/definitions/handlers.APIResponse'
+        "400":
+          description: 无效输入
+          schema:
+            $ref: '#/definitions/handlers.APIResponse'
+        "409":
+          description: 学生已存在
+          schema:
+            $ref: '#/definitions/handlers.APIResponse'
+      summary: 添加新学生
+      tags:
+      - students
+  /student/{id}:
+    delete:
+      description: 通过学生 ID 从系统中删除学生。
+      parameters:
+      - description: 学生 ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功消息
+          schema:
+            $ref: '#/definitions/handlers.APIResponse'
+        "404":
+          description: 学生未找到
+          schema:
+            $ref: '#/definitions/handlers.APIResponse'
+      summary: 删除学生
+      tags:
+      - students
+    get:
+      description: 根据学生 ID 获取学生的详细信息。
+      parameters:
+      - description: 学生 ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Student'
+        "404":
+          description: 学生未找到
+          schema:
+            $ref: '#/definitions/handlers.APIResponse'
+      summary: 查询学生信息
+      tags:
+      - students
+    put:
+      consumes:
+      - application/json
+      description: 通过学生 ID 更新学生的基本信息。
+      parameters:
+      - description: 学生 ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 更新后的学生信息
+        in: body
+        name: student
+        required: true
+        schema:
+          $ref: '#/definitions/models.Student'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功消息
+          schema:
+            $ref: '#/definitions/handlers.APIResponse'
+        "400":
+          description: 无效输入
+          schema:
+            $ref: '#/definitions/handlers.APIResponse'
+        "404":
+          description: 学生未找到
+          schema:
+            $ref: '#/definitions/handlers.APIResponse'
+      summary: 更新学生信息
+      tags:
+      - students
+  /student/{id}/score/{course}:
+    post:
+      consumes:
+      - application/json
+      description: 为学生的特定课程添加成绩。
+      parameters:
+      - description: 学生 ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 课程名称
+        in: path
+        name: course
+        required: true
+        type: string
+      - description: 课程成绩
+        in: body
+        name: score
+        required: true
+        schema:
+          $ref: '#/definitions/models.ScoreInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功消息
+          schema:
+            $ref: '#/definitions/handlers.APIResponse'
+        "400":
+          description: 无效输入
+          schema:
+            $ref: '#/definitions/handlers.APIResponse'
+        "404":
+          description: 学生未找到
+          schema:
+            $ref: '#/definitions/handlers.APIResponse'
+      summary: 为学生添加课程成绩
+      tags:
+      - scores
+swagger: "2.0"
