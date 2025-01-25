@@ -4,9 +4,8 @@
 
 - Swagger UI 文档：[http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
 
-## 运行截图
+### 运行截图
 ![运行截图](https://www.helloimg.com/i/2025/01/26/679513c700965.png)
-
 
 ### Swagger UI 界面
 ![Swagger UI 文档](https://www.helloimg.com/i/2025/01/23/6791f3f4a301b.png)
