@@ -42,14 +42,17 @@ func main() {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// 加载 CSV 文件数据
-	loadCSVData()
+	if err := loadCSVData(); err != nil {
+		fmt.Printf("Failed to load CSV data: %v\n", err)
+		return
+	}
 
 	// 启动服务器
 	r.Run(":8080")
 }
 
 // loadCSVData 从 CSV 文件加载数据
-func loadCSVData() {
+func loadCSVData() error {
 	var wg sync.WaitGroup
 	ch := make(chan *models.Student, 100)
 	errCh := make(chan utils.ImportCSVError, 100)
@@ -63,11 +66,22 @@ func loadCSVData() {
 		}
 	}()
 
-	wg.Wait()
-	close(ch)
-	close(errCh)
+	// 等待所有 Goroutines 完成
+	go func() {
+		wg.Wait()
+		close(ch)
+		close(errCh)
+	}()
 
+	var fatalError error
 	for err := range errCh {
+		if err.Line == 0 { // 假设 Line 为 0 表示文件打开或读取失败
+			fatalError = err.Err
+			close(ch) // 关闭学生数据通道，停止后续处理
+			break
+		}
 		fmt.Printf("Error: %v\n", err)
 	}
+
+	return fatalError
 }
